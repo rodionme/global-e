@@ -1,7 +1,6 @@
 import {FormEvent} from 'react';
 
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
@@ -13,18 +12,18 @@ import {useFormStore} from "../../store";
 
 import styles from './Registration.module.scss';
 
-export const Registration = () => {
+type RegistrationProps = {
+  onSubmit: () => void;
+};
+
+export const Registration = ({onSubmit}: RegistrationProps) => {
   const userData = useFormStore((state) => state.userData);
   const currentStep = useFormStore((state) => state.currentStep);
   const changeUserData = useFormStore((state) => state.changeUserData);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // console.log({
-    //   email: data.get('email'),
-    //   password: data.get('password'),
-    // });
+    onSubmit();
   };
 
   return <div className={styles.Registration}>
@@ -152,15 +151,6 @@ export const Registration = () => {
             <SummaryField title="State" value={userData.state} />
             <SummaryField title="Zip" value={userData.zip} />
             <SummaryField title="Username" value={userData.username} />
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{mt: 3, mb: 2}}
-            >
-              Sign In
-            </Button>
           </Step>}
         </Box>
       </Box>

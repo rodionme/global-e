@@ -16,8 +16,12 @@ type UserData = {
 
 interface FormState {
   userData: UserData;
+  isUserDataValid: boolean;
   currentStep: number;
+  isSubmitted: boolean;
   changeUserData: (field: keyof UserData, value: string) => void;
+  setUserDataValid: (isValid: boolean) => void;
+  setSubmitted: () => void;
   goBack: () => void;
   goForward: () => void;
 }
@@ -35,10 +39,20 @@ export const useFormStore = create<FormState>()(devtools((set) => ({
     password: '',
   },
 
+  isUserDataValid: true,
   currentStep: 1,
+  isSubmitted: false,
 
   changeUserData: (field: keyof UserData, value: string) => {
     set((state) => ({userData: {...state.userData, [field]: value}}));
+  },
+
+  setUserDataValid: (isValid) => {
+    set((state) => ({isUserDataValid: isValid}));
+  },
+
+  setSubmitted: () => {
+    set((state) => ({isSubmitted: true}));
   },
 
   goBack: () => set((state) => {
