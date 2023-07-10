@@ -1,4 +1,4 @@
-import { FormEvent } from 'react';
+import {FormEvent} from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,8 +14,6 @@ import {Step} from "./Step";
 
 export const Registration = () => {
   const currentStep = useFormStore((state) => state.currentStep)
-  const goBack = useFormStore((state) => state.goBack)
-  const goForward = useFormStore((state) => state.goForward)
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -42,12 +40,8 @@ export const Registration = () => {
           Sign in
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <Step>
-            <Typography component="h2" variant="h6">
-              User Details
-            </Typography>
-
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+          {currentStep === 1 && <Step title="User Details">
             <TextField
               margin="normal"
               required
@@ -75,13 +69,9 @@ export const Registration = () => {
               label="Email"
               name="email"
             />
-          </Step>
+          </Step>}
 
-          <Step>
-            <Typography component="h2" variant="h6">
-              Address Details
-            </Typography>
-
+          {currentStep === 2 && <Step title="Address Details">
             <TextField
               margin="normal"
               required
@@ -118,13 +108,9 @@ export const Registration = () => {
               label="Zip Code"
               name="zip"
             />
-          </Step>
+          </Step>}
 
-          <Step>
-            <Typography component="h2" variant="h6">
-              Account Details
-            </Typography>
-
+          {currentStep === 3 && <Step title="Account Details">
             <TextField
               margin="normal"
               required
@@ -143,24 +129,20 @@ export const Registration = () => {
               type="password"
               id="password"
             />
-          </Step>
+          </Step>}
 
-          <Step>
-            <Typography component="h2" variant="h6">
-              Summary
-            </Typography>
-
+          {currentStep === 4 && <Step title="Summary">
             Summary info will be here
 
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{mt: 3, mb: 2}}
             >
               Sign In
             </Button>
-          </Step>
+          </Step>}
         </Box>
       </Box>
     </Container>
