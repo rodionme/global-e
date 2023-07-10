@@ -42,7 +42,7 @@ export const Step = ({title, children}: StepProps) => {
     <Stack direction="row" justifyContent="space-between">
       <Button disabled={currentStep === MIN_STEP} onClick={goBack}>Back</Button>
 
-      <Button variant="contained" onClick={goForward}>Forward</Button>
+      <Button variant="contained" onClick={goForward}>{currentStep === MAX_STEP ? 'Submit' : 'Forward'}</Button>
     </Stack>
   </div>;
 };

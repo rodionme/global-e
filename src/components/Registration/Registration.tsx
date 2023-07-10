@@ -6,13 +6,15 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import {Step} from "./Step";
+import {SummaryField} from "./SummaryField";
 
 import {useFormStore} from "../../store";
 
 import styles from './Registration.module.scss';
-import {Step} from "./Step";
 
 export const Registration = () => {
+  const userData = useFormStore((state) => state.userData);
   const currentStep = useFormStore((state) => state.currentStep);
   const changeUserData = useFormStore((state) => state.changeUserData);
 
@@ -41,7 +43,7 @@ export const Registration = () => {
           Sign in
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{width: "100%", mt: 1}}>
           {currentStep === 1 && <Step title="User Details">
             <TextField
               margin="normal"
@@ -142,7 +144,14 @@ export const Registration = () => {
           </Step>}
 
           {currentStep === 4 && <Step title="Summary">
-            Summary info will be here
+            <SummaryField title="First Name" value={userData.firstName} />
+            <SummaryField title="Last Name" value={userData.lastName} />
+            <SummaryField title="Email" value={userData.email} />
+            <SummaryField title="Street" value={userData.street} />
+            <SummaryField title="City" value={userData.city} />
+            <SummaryField title="State" value={userData.state} />
+            <SummaryField title="Zip" value={userData.zip} />
+            <SummaryField title="Username" value={userData.username} />
 
             <Button
               type="submit"
