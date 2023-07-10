@@ -13,7 +13,8 @@ import styles from './Registration.module.scss';
 import {Step} from "./Step";
 
 export const Registration = () => {
-  const currentStep = useFormStore((state) => state.currentStep)
+  const currentStep = useFormStore((state) => state.currentStep);
+  const changeUserData = useFormStore((state) => state.changeUserData);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,6 +51,7 @@ export const Registration = () => {
               label="First Name"
               name="first-name"
               autoFocus
+              onChange={(event) => changeUserData('firstName', event.currentTarget.value)}
             />
 
             <TextField
@@ -59,6 +61,7 @@ export const Registration = () => {
               id="last-name"
               label="Last Name"
               name="last-name"
+              onChange={(event) => changeUserData('lastName', event.currentTarget.value)}
             />
 
             <TextField
@@ -68,6 +71,7 @@ export const Registration = () => {
               id="email"
               label="Email"
               name="email"
+              onChange={(event) => changeUserData('email', event.currentTarget.value)}
             />
           </Step>}
 
@@ -80,6 +84,7 @@ export const Registration = () => {
               label="Street"
               name="street"
               autoFocus
+              onChange={(event) => changeUserData('street', event.currentTarget.value)}
             />
 
             <TextField
@@ -89,6 +94,7 @@ export const Registration = () => {
               id="city"
               label="City"
               name="city"
+              onChange={(event) => changeUserData('city', event.currentTarget.value)}
             />
 
             <TextField
@@ -98,6 +104,7 @@ export const Registration = () => {
               id="state"
               label="State"
               name="state"
+              onChange={(event) => changeUserData('state', event.currentTarget.value)}
             />
 
             <TextField
@@ -107,6 +114,7 @@ export const Registration = () => {
               id="zip"
               label="Zip Code"
               name="zip"
+              onChange={(event) => changeUserData('zip', event.currentTarget.value)}
             />
           </Step>}
 
@@ -118,6 +126,7 @@ export const Registration = () => {
               id="username"
               label="Username"
               name="username"
+              onChange={(event) => changeUserData('username', event.currentTarget.value)}
             />
 
             <TextField
@@ -128,6 +137,7 @@ export const Registration = () => {
               label="Password"
               type="password"
               id="password"
+              onChange={(event) => changeUserData('password', event.currentTarget.value)}
             />
           </Step>}
 
