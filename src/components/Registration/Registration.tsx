@@ -1,38 +1,98 @@
-import {FormEvent} from 'react';
+import { FormEvent } from 'react';
+import { DefaultValues, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+import { RegistrationResolver } from '../../helpers/validationSchemas';
+import { useFormStore } from '../../store';
 
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-import TextField from '@mui/material/TextField';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
-import {Step} from "./Step";
-import {SummaryField} from "./SummaryField";
+import { Summary } from './Summary';
+import { UserDetails } from './UserDetails';
+import { AddressDetails } from './AddressDetails';
+import { AccountDetails } from './AccountDetails';
 
-import {useFormStore} from "../../store";
+export type FormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+  username: string;
+  password: string;
+};
 
-import styles from './Registration.module.scss';
+const defaultValues: DefaultValues<FormValues> = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  street: '',
+  city: '',
+  state: '',
+  zip: '',
+  username: '',
+  password: '',
+};
+
+type FormStep = {
+  label: string;
+  fields: Array<keyof FormValues>;
+};
+
+const steps: FormStep[] = [
+  { label: 'User Details', fields: ['firstName', 'lastName', 'email'] },
+  { label: 'Address Details', fields: ['street', 'city', 'state', 'zip'] },
+  { label: 'Account Details', fields: ['username', 'password'] },
+  { label: 'Summary', fields: [] },
+];
 
 type RegistrationProps = {
   onSubmit: () => void;
 };
 
-export const Registration = ({onSubmit}: RegistrationProps) => {
-  const userData = useFormStore((state) => state.userData);
+export const Registration = ({ onSubmit }: RegistrationProps) => {
   const currentStep = useFormStore((state) => state.currentStep);
-  const changeUserData = useFormStore((state) => state.changeUserData);
+  const goForward = useFormStore((state) => state.goForward);
+
+  const { getValues, control, getFieldState, trigger } = useForm<FormValues>({
+    defaultValues,
+    resolver: yupResolver(RegistrationResolver),
+    mode: 'all',
+  });
+
+  const onGoForward = () => {
+    const stepFields = steps[currentStep].fields;
+
+    trigger(stepFields);
+
+    const isStepValid = stepFields.every((field) => {
+      const fieldState = getFieldState?.(field);
+      const isFieldValid = fieldState?.isDirty && !fieldState.invalid;
+
+      return isFieldValid;
+    });
+
+    if (isStepValid) {
+      goForward();
+    }
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit();
   };
 
-  return <div className={styles.Registration}>
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-
+  return (
+    <Container component="main" maxWidth="md">
       <Box
         sx={{
-          marginTop: 8,
+          marginY: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -42,118 +102,45 @@ export const Registration = ({onSubmit}: RegistrationProps) => {
           Sign in
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{width: "100%", mt: 1}}>
-          {currentStep === 1 && <Step title="User Details">
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="first-name"
-              label="First Name"
-              name="first-name"
-              autoFocus
-              onChange={(event) => changeUserData('firstName', event.currentTarget.value)}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="last-name"
-              label="Last Name"
-              name="last-name"
-              onChange={(event) => changeUserData('lastName', event.currentTarget.value)}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              onChange={(event) => changeUserData('email', event.currentTarget.value)}
-            />
-          </Step>}
-
-          {currentStep === 2 && <Step title="Address Details">
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="street"
-              label="Street"
-              name="street"
-              autoFocus
-              onChange={(event) => changeUserData('street', event.currentTarget.value)}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="city"
-              label="City"
-              name="city"
-              onChange={(event) => changeUserData('city', event.currentTarget.value)}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="state"
-              label="State"
-              name="state"
-              onChange={(event) => changeUserData('state', event.currentTarget.value)}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="zip"
-              label="Zip Code"
-              name="zip"
-              onChange={(event) => changeUserData('zip', event.currentTarget.value)}
-            />
-          </Step>}
-
-          {currentStep === 3 && <Step title="Account Details">
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              onChange={(event) => changeUserData('username', event.currentTarget.value)}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              onChange={(event) => changeUserData('password', event.currentTarget.value)}
-            />
-          </Step>}
-
-          {currentStep === 4 && <Step title="Summary">
-            <SummaryField title="First Name" value={userData.firstName} />
-            <SummaryField title="Last Name" value={userData.lastName} />
-            <SummaryField title="Email" value={userData.email} />
-            <SummaryField title="Street" value={userData.street} />
-            <SummaryField title="City" value={userData.city} />
-            <SummaryField title="State" value={userData.state} />
-            <SummaryField title="Zip" value={userData.zip} />
-            <SummaryField title="Username" value={userData.username} />
-          </Step>}
+        <Box
+          sx={{
+            marginY: 3,
+          }}
+        >
+          <Stepper activeStep={currentStep}>
+            {steps.map(({ label }) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
         </Box>
+
+        <Container component="div" maxWidth="xs">
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ width: '100%', mt: 1 }}
+          >
+            {currentStep === 0 && (
+              <UserDetails control={control} onGoForward={onGoForward} />
+            )}
+
+            {currentStep === 1 && (
+              <AddressDetails control={control} onGoForward={onGoForward} />
+            )}
+
+            {currentStep === 2 && (
+              <AccountDetails control={control} onGoForward={onGoForward} />
+            )}
+
+            {currentStep === 3 && (
+              <Summary userData={getValues()} onGoForward={onGoForward} />
+            )}
+          </Box>
+        </Container>
       </Box>
     </Container>
-  </div>;
+  );
 };

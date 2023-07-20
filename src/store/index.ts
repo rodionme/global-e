@@ -1,69 +1,36 @@
-import {create} from 'zustand'
-import {devtools} from 'zustand/middleware'
-import {MAX_STEP, MIN_STEP} from "../constants";
-
-type UserData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
-  username: string;
-  password: string;
-};
+import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
+import { MAX_STEP, MIN_STEP } from '../constants';
 
 interface FormState {
-  userData: UserData;
-  isUserDataValid: boolean;
   currentStep: number;
   isSubmitted: boolean;
-  changeUserData: (field: keyof UserData, value: string) => void;
-  setUserDataValid: (isValid: boolean) => void;
   setSubmitted: () => void;
   goBack: () => void;
   goForward: () => void;
 }
 
-export const useFormStore = create<FormState>()(devtools((set) => ({
-  userData: {
-    firstName: '',
-    lastName: '',
-    email: '',
-    street: '',
-    city: '',
-    state: '',
-    zip: '',
-    username: '',
-    password: '',
-  },
+export const useFormStore = create<FormState>()(
+  devtools((set) => ({
+    currentStep: 0,
+    isSubmitted: false,
 
-  isUserDataValid: true,
-  currentStep: 1,
-  isSubmitted: false,
+    setSubmitted: () => {
+      set(() => ({ isSubmitted: true }));
+    },
 
-  changeUserData: (field: keyof UserData, value: string) => {
-    set((state) => ({userData: {...state.userData, [field]: value}}));
-  },
+    goBack: () =>
+      set((state) => {
+        if (state.currentStep === MIN_STEP) return state;
 
-  setUserDataValid: (isValid) => {
-    set((state) => ({isUserDataValid: isValid}));
-  },
+        return { currentStep: state.currentStep - 1 };
+      }),
 
-  setSubmitted: () => {
-    set((state) => ({isSubmitted: true}));
-  },
+    goForward: () =>
+      set((state) => {
+        if (state.currentStep === MAX_STEP) return state;
 
-  goBack: () => set((state) => {
-    if (state.currentStep === MIN_STEP) return state;
-
-    return ({currentStep: state.currentStep - 1});
-  }),
-
-  goForward: () => set((state) => {
-    if (state.currentStep === MAX_STEP) return state;
-
-    return ({currentStep: state.currentStep + 1});
-  }),
-})));
+        return { currentStep: state.currentStep + 1 };
+      }),
+  })),
+);

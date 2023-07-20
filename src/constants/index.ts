@@ -1,2 +1,2 @@
-export const MIN_STEP = 1;
-export const MAX_STEP = 4;
+export const MIN_STEP = 0;
+export const MAX_STEP = 3;
